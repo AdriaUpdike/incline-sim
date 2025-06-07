@@ -79,7 +79,7 @@ function drawBox(x, theta) {
   ctx.translate(100, 100);
   ctx.scale(1, 1);         // flip drawing vertically, was 1,-1
   ctx.rotate(-theta);
-  const y = -10;            // top surface of ramp
+  const y = -0;            // top surface of ramp, was -10
   ctx.fillStyle = 'red';
   ctx.fillRect(x, y, box.size, box.size);
   ctx.restore();
