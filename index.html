@@ -76,10 +76,10 @@ function drawIncline(theta) {
 
 function drawBox(x, theta) {
   ctx.save();
-  ctx.translate(150, 100);  // used to be 100, 100
+  ctx.translate(100, 100);  
   ctx.scale(1, 1);         // flip drawing vertically, used to be 
   ctx.rotate(-theta);
-  const y = -10;            // top surface of ramp
+  const y = 10;            // top surface of ramp, used to be -10
   ctx.fillStyle = 'red';
   ctx.fillRect(x, y, box.size, box.size);
   ctx.restore();
