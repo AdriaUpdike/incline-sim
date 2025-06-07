@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Inclined Plane Simulation</title>
+  <style>
+    canvas { background: #eef; display: block; margin: 10px auto; }
+    .controls { text-align: center; font-family: sans-serif; }
+    input[type=range] { width: 300px; }
+  </style>
+</head>
+<body>
+
+<div class="controls">
+  <label>Angle (degrees): <span id="angleVal">30</span></label><br>
+  <input type="range" id="angleSlider" min="0" max="60" value="30"><br>
+
+  <label>Friction Coefficient (μ): <span id="muVal">0.2</span></label><br>
+  <input type="range" id="muSlider" min="0" max="1" step="0.01" value="0.2"><br>
+</div>
+
+<canvas id="simCanvas" width="600" height="400"></canvas>
+
+<script>
+const canvas = document.getElementById('simCanvas');
+const ctx = canvas.getContext('2d');
+const g = 9.8;
+
+let angleDeg = 30;
+let mu = 0.2;
+
+const angleSlider = document.getElementById('angleSlider');
+const muSlider = document.getElementById('muSlider');
+const angleVal = document.getElementById('angleVal');
+const muVal = document.getElementById('muVal');
+
+angleSlider.oninput = () => {
+  angleDeg = parseFloat(angleSlider.value);
+  angleVal.textContent = angleDeg;
+};
+
+muSlider.oninput = () => {
+  mu = parseFloat(muSlider.value);
+  muVal.textContent = mu;
+};
+
+let box = {
+  x: 0,
+  v: 0,
+  size: 30
+};
+
+function resetBox() {
+  box.x = 0;
+  box.v = 0;
+}
+
+function drawIncline(theta) {
+  ctx.save();
+  ctx.translate(500, 300); // move to bottom-right
+  ctx.rotate(Math.PI + theta); // rotate uphill to left
+  ctx.fillStyle = '#ccc';
+  ctx.fillRect(0, -10, 500, 20); // incline plane
+  ctx.restore();
+}
+
+function drawBox(x, theta) {
+  ctx.save();
+  ctx.translate(500, 300);
+  ctx.rotate(Math.PI + theta);
+  const y = -box.size - 10; // on top of incline
+  ctx.fillStyle = 'red';
+  ctx.fillRect(x, y, box.size, box.size);
+  ctx.restore();
+}
+
+function updatePhysics(dt, theta, mu) {
+  const a = g * (Math.sin(theta) - mu * Math.cos(theta));
+  if (a < 0 && box.v <= 0) return;
+  box.v += a * dt;
+  box.x += box.v * dt * 100;
+}
+
+function loop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const theta = angleDeg * Math.PI / 180;
+
+  drawIncline(theta);
+  drawBox(box.x, theta);
+  updatePhysics(0.016, theta, mu);
+
+  if (box.x > 400) resetBox();
+
+  requestAnimationFrame(loop);
+}
+
+resetBox();
+loop();
+</script>
+
+</body>
+</html>
